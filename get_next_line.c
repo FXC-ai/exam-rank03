@@ -169,45 +169,55 @@ char *trim_stash(char *stash)
 
 char *get_next_line(fd)
 {
-    static char* stash;
     char buf[BUFFER_SIZE + 1];
+    static char* stash;
     size_t caract_read;
     char *tmp;
     char *line;
-    // le buf ne se termine pas par un \0 
-    //printf("caract read = %s\n", buf);
-    caract_read = read(fd, buf, BUFFER_SIZE);
-    buf[BUFFER_SIZE] = '\0';
-    //printf("caract read = %s\n", buf);
+
+    stash = NULL;
+    caract_read = 1;
+    tmp = NULL;
+    line = NULL;
+
+    //caract_read = read(fd, buf, BUFFER_SIZE);
+    //buf[BUFFER_SIZE] = '\0';
     
-    if (caract_read == BUFFER_SIZE) 
+    while (caract_read > 0)
     {
-        tmp = ft_strjoin(stash, buf);
-        //printf("tmp = %s\n", tmp);
-        if (stash != NULL)
-        {
-            free(stash);
-        }
-        stash = ft_strdup(tmp);
-        free(tmp);
 
-        //printf("stash = %s\n", stash);
-
-        if (bn_in_str(stash) > 0)
-        {
-            printf("stash = %s\n", stash);
-            line = ft_strndup(stash, bn_in_str(stash));
-            free(stash);
-            stash = NULL;
-            trim_stash(stash);
-            return line;
-        }
+        caract_read = read(fd, buf, BUFFER_SIZE);
+        buf[BUFFER_SIZE] = '\0';
         
-        //free(stash);
-        //stash = NULL;
-        //stash = tmp;
-        //fre
+        if (caract_read == BUFFER_SIZE) 
+        {
+            tmp = ft_strjoin(stash, buf);
+            if (stash != NULL)
+            {
+                stash = NULL;
+                free(stash);
+            }
+
+            stash = ft_strdup(tmp);
+            tmp = NULL;
+            free(tmp);
+
+            if (bn_in_str(stash) > 0)
+            {
+                line = ft_strndup(stash, bn_in_str(stash));
+                tmp = trim_stash(stash);
+                stash = NULL;
+                free(stash);
+                
+                stash = ft_strdup(tmp);
+                tmp = NULL;
+                free(tmp);   
+                return line;
+            }
+            
+        }
     }
+    /*
     else if (caract_read < BUFFER_SIZE && caract_read > 0)
     {
         // on a atteint la fin du fichier 
@@ -219,7 +229,7 @@ char *get_next_line(fd)
         printf("aucun caractere lu\n");
 
     }
-    
+    */
     
     
     
@@ -234,17 +244,21 @@ int main ()
 {
     char *line;
     int fd;
-    
+    int i;
+
     fd = open("test", O_RDONLY);
 
-    line = get_next_line(fd);
+    i = 0;
+    while (i < 5)
+    {
+        line = get_next_line(fd);
+        printf("line = [%s]\n", line);
+        i++;
+    }
 
-    printf("line = [%s]\n", line);
 
 
-
-
-    trim_stash("123456\n789");
+    //trim_stash("123456\n789");
     
     //printf("test dup = %s\n", ft_strdup("ca joue grave"));
     //ft_strndup("tk",4);
