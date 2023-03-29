@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#define BUFFER_SIZE 7
+#include "get_next_line.h"
 
 int ft_strlen(char *str)
 {
@@ -85,7 +81,7 @@ char *ft_strdup(char *str)
 
 char *ft_strndup(char *str, int n)
 {
-    int     size_str;
+    
     char    *result;
     int     i;
 
@@ -157,20 +153,23 @@ char *trim_stash(char *stash)
     return stash;
 } 
 
-
-
-char *get_next_line(fd)
+char *get_next_line(int fd)
 {
     char buf[BUFFER_SIZE + 1];
     static char* stash;
     size_t caract_read;
     char *tmp;
     char *line;
-    int i = 0;
 
     tmp = NULL;
     line = NULL;
     //buf = malloc((BUFFER_SIZE+1)*sizeof(char));
+
+    if (fd < 0 || BUFFER_SIZE <= 0)
+    {
+        return NULL;
+    }
+
 
     caract_read = read(fd, buf, BUFFER_SIZE);
     buf[caract_read] = '\0';
@@ -178,8 +177,6 @@ char *get_next_line(fd)
     
     while (caract_read > 0)
     {
-        i++;
-
         tmp = ft_strjoin(stash, buf);
         if (stash != NULL)
         {
@@ -227,7 +224,7 @@ char *get_next_line(fd)
 }
 
 
-
+/*
 int main ()
 {
     char *line;
@@ -246,4 +243,4 @@ int main ()
     }
     
     return 0;
-}
+}*/
