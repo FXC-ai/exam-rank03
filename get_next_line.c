@@ -157,7 +157,7 @@ char *get_next_line(int fd)
 {
     char buf[BUFFER_SIZE + 1];
     static char* stash;
-    size_t caract_read;
+    int caract_read;
     char *tmp;
     char *line;
 
@@ -172,6 +172,17 @@ char *get_next_line(int fd)
 
 
     caract_read = read(fd, buf, BUFFER_SIZE);
+    if (caract_read == -1)
+    {
+        if (stash != NULL)
+        {
+            free(stash);
+            stash = NULL;
+        }
+        //printf("inutile d aller plus loin\n");
+        return(NULL);
+    }
+
     buf[caract_read] = '\0';
 
     
@@ -196,6 +207,16 @@ char *get_next_line(int fd)
         }
         
         caract_read = read(fd, buf, BUFFER_SIZE);
+        if (caract_read == -1)
+        {
+            if (stash != NULL)
+            {
+                free(stash);
+                stash = NULL;
+            }
+            //printf("inutile d aller plus loin\n");
+            return(NULL);
+        }
         buf[caract_read] = '\0';
     }
     
@@ -214,7 +235,7 @@ char *get_next_line(int fd)
         return (line);
     }
 
-    if (ft_strlen(stash) == 0)
+    if (stash != NULL && ft_strlen(stash) == 0)
     {
         free(stash);
         stash = NULL;
@@ -236,7 +257,7 @@ int main ()
     i = 0;
     while (line)
     {
-        line = get_next_line(fd);
+        line = get_next_line(42);
         printf("line %d = [%s]\n",i, line);
         free(line);
         i++;
