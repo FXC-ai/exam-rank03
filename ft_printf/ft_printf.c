@@ -5,41 +5,39 @@
 
 #define BASE_HEX "0123456789abcdef"
 
-int ft_putstr(char *str)
+void count_putchar(char c, int *count)
 {
-	int count;
-
-	count = 0;
-	while (*str)
-	{
-		write(1,str,1);
-		count++;
-		str++;
-	}
-	return count;
+	write (1,&c,1);
+	(*count)++;
 }
 
-int ft_putnbr(int nbr)
+void ft_putstr(char *str, int *count)
+{
+	while (*str)
+	{
+		count_putchar(*str, count);
+		str++;
+	}
+}
+
+void ft_putnbr(int nbr, int *count)
 {
 	int n;
-	int count;
 	int divider;
 	int cpy_nbr;
 
 	if (nbr == -2147483648)
 	{
-		write(1,"-2147483648", 11);
-		count += 11;
-		return count;
+		ft_putstr("-2147483648", count);
+		return ;
 	}
+
 	if (nbr < 0)
 	{
-		write(1,"-",1);
-		count++;
+		count_putchar('-', count);
 		nbr *= -1;
 	}
 
-	count = 0;
 	divider = 1;
 	cpy_nbr = nbr;
 	while (cpy_nbr > 10)
@@ -51,55 +49,25 @@ int ft_putnbr(int nbr)
 	while (nbr > 0)
 	{
 		n = (nbr / divider) + 48;
-		write (1,&n,1);
-		count ++;
+		count_putchar(n, count);
 		nbr = nbr % divider;
 		divider /= 10;
 	}
-
-	return count;
 }
 
-int ft_putnbr_hex (int nbr, int count)
+void ft_putnbr_hex (int nbr, int *count)
 {
 	int n = 0;
 
-	if (nbr == 0)
-	{
-		return count;
+	if (nbr != 0)
+	{	
+		n = nbr % 16;
+		nbr = nbr / 16;
+		ft_putnbr_hex(nbr, count);
+		count_putchar(BASE_HEX[n], count);
 	}
-	
-	n = nbr % 16;
-	nbr = nbr / 16;
-	ft_putnbr_hex(nbr, count++);
-	write (1,&BASE_HEX[n],1);
-	//count++;
-	
-	return count;
-	/*
-	480 = 30 x 16 + 0
-	30 = 1 x 16 + 14
-	14 = 0 X 16 + 14
-	*/
-
-	/*
-	26 = 16 x 1 + 10
-	1 = 16 x 0 + 1
-	
-	*/
-
-	//printf("nbr = %d\n", nbr);
-	//count++;
-
-	//return count;
-
 }
 
-void count_putchar(char c, int *count)
-{
-	write (1,&c,1);
-	*count++;
-}
 
 int ft_printf(const char *str, ...)
 {
@@ -121,26 +89,20 @@ int ft_printf(const char *str, ...)
 			{
 				case 's':                       
 					s = va_arg(ap, char *);
-					tmp = ft_putstr(s);
-					count += tmp;
+					ft_putstr(s, &count);
 					break;
 				case 'd':                       
 					d = va_arg(ap, int);
-					tmp = ft_putnbr(d);
-					count += tmp;
+					ft_putnbr(d, &count);
 					break;
 				case 'x':
 					d = va_arg(ap, int);
-					tmp = ft_putnbr_hex(d, 0);
-					count += tmp;
+					ft_putnbr_hex(d, &count);
 					break;
 			}
 		}
 		else
-		{
-			write(1,str,1);
-			count++;
-		}
+			count_putchar(*str, &count);
 		str++;
 	}
 	va_end(ap);	
@@ -156,14 +118,30 @@ int main (void)
 	//ft_putstr("Bonjour voici le test\n");
 
 	int test = 2147483647;
+	int test2 = -2147483648;
 	int real, mine;
 
-	real =    printf("%x\n", test);
-	
-	mine = ft_printf("%x\n", test);
-	
-	
+	//char *str_test;
+
+	real =    printf("%s\n", "Pourquoi");
+	mine = ft_printf("%s\n", "Pourquoi");
 	printf("real = %d | mine = %d\n", real, mine);
+
+	real =    printf("%d\n", test2);
+	mine = ft_printf("%d\n", test2);
+	printf("real = %d | mine = %d\n", real, mine);
+
+
+	real =    printf("%d\n", test);
+	mine = ft_printf("%d\n", test);
+	printf("real = %d | mine = %d\n", real, mine);
+
+
+	real =    printf("%x\n", test);
+	mine = ft_printf("%x\n", test);
+	printf("real = %d | mine = %d\n", real, mine);
+
+
 	//printf("\n");
 
 
