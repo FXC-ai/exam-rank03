@@ -68,13 +68,12 @@ int ft_putnbr_hex (int nbr, int count)
 	{
 		return count;
 	}
-
-
+	
 	n = nbr % 16;
 	nbr = nbr / 16;
-	ft_putnbr_hex(nbr, count);
+	ft_putnbr_hex(nbr, count++);
 	write (1,&BASE_HEX[n],1);
-	count++;
+	//count++;
 	
 	return count;
 	/*
@@ -96,14 +95,21 @@ int ft_putnbr_hex (int nbr, int count)
 
 }
 
+void count_putchar(char c, int *count)
+{
+	write (1,&c,1);
+	*count++;
+}
+
 int ft_printf(const char *str, ...)
 {
 	va_list ap, ap2;
 	int d;
-	char c; 
+	int tmp;
 	char *s;
-	int size;
+	int count;
 
+	count = 0;
 	va_start(ap, str);
 	va_copy(ap2, ap);
 	while (*str != '\0')
@@ -113,34 +119,34 @@ int ft_printf(const char *str, ...)
 			str++;
 			switch(*str) 
 			{
-				
 				case 's':                       
 					s = va_arg(ap, char *);
-					ft_putstr(s);
+					tmp = ft_putstr(s);
+					count += tmp;
 					break;
 				case 'd':                       
 					d = va_arg(ap, int);
-					printf("int %d\n", d);
+					tmp = ft_putnbr(d);
+					count += tmp;
 					break;
-				case 'c':
-					c = va_arg(ap, int);
-					write (1,&c,1);
-					size++;
+				case 'x':
+					d = va_arg(ap, int);
+					tmp = ft_putnbr_hex(d, 0);
+					count += tmp;
 					break;
-				
 			}
 		}
 		else
 		{
 			write(1,str,1);
+			count++;
 		}
-		size++;
 		str++;
 	}
-	va_end(ap);
-	
+	va_end(ap);	
 	va_end(ap2);
-	return size;
+
+	return count;
 }
 
 int main (void)
@@ -149,12 +155,16 @@ int main (void)
 
 	//ft_putstr("Bonjour voici le test\n");
 
-	int test = 2147483646;
+	int test = 2147483647;
+	int real, mine;
 
-	printf("%d : %x\n", test, test);
+	real =    printf("%x\n", test);
 	
-	ft_putnbr_hex(test, 0);
-	printf("\n");
+	mine = ft_printf("%x\n", test);
+	
+	
+	printf("real = %d | mine = %d\n", real, mine);
+	//printf("\n");
 
 
     return 0;
