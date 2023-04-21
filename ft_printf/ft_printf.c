@@ -20,7 +20,7 @@ void ft_putstr(char *str, int *count)
 	}
 }
 
-void ft_putnbr(int nbr, int *count)
+void ft_putnbr_dep(int nbr, int *count)
 {
 	int n;
 	int divider;
@@ -55,11 +55,34 @@ void ft_putnbr(int nbr, int *count)
 	}
 }
 
+void ft_putnbr(int nbr, int *count)
+{
+	int n = 0;
+
+	if (nbr == -2147483648)
+	{
+		ft_putstr("-2147483648", count);
+	}
+	else if (nbr < 0)
+	{
+		count_putchar('-', count);
+		ft_putnbr(-nbr, count);
+	}
+	else if (nbr > 0)
+	{
+		n = nbr % 10;
+		nbr = nbr / 10;
+		ft_putnbr(nbr, count);
+		count_putchar(n + 48, count);
+	}
+
+}
+
 void ft_putnbr_hex (int nbr, int *count)
 {
 	int n = 0;
 
-	if (nbr != 0)
+	if (nbr > 0)
 	{	
 		n = nbr % 16;
 		nbr = nbr / 16;
@@ -137,9 +160,13 @@ int main (void)
 	printf("real = %d | mine = %d\n", real, mine);
 
 
-	real =    printf("%x\n", test);
-	mine = ft_printf("%x\n", test);
+	real =    printf("%x\n", 9016);
+	mine = ft_printf("%x\n", 9016);
 	printf("real = %d | mine = %d\n", real, mine);
+
+	int count;
+	count = 0;
+	ft_putnbr(-2147483648, &count);
 
 
 	//printf("\n");
