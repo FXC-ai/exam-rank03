@@ -79,7 +79,7 @@ char *ft_strdup(char *str)
 }
 
 
-char *ft_strndup(char *str, int n)
+char *extract_line(char *str, int n)
 {
     
     char    *result;
@@ -87,13 +87,10 @@ char *ft_strndup(char *str, int n)
 
     if (str == NULL)
         return NULL;
-
-    
+    /*
     if (ft_strlen(str) <= n)
-    {
         return ft_strdup(str);
-    }
-    
+    */
     result = malloc(sizeof(char) * (n + 2));
     if (result == NULL)
         return NULL;
@@ -144,7 +141,7 @@ char *trim_stash(char *stash)
 
     new_size_stash = size_stash - i;
     
-    tmp = ft_strndup(stash+i+1, new_size_stash-1);
+    tmp = ft_strdup(stash+i+1);
     free(stash);
     stash = NULL;
     stash = ft_strdup(tmp);
@@ -201,7 +198,7 @@ char *get_next_line(int fd)
 
         if (bn_in_str(stash) != -1)
         {
-            line = ft_strndup(stash, bn_in_str(stash));
+            line = extract_line(stash, bn_in_str(stash));
             stash = trim_stash(stash);
             return line;
         }
@@ -222,7 +219,7 @@ char *get_next_line(int fd)
     
     if (bn_in_str(stash) != -1 && ft_strlen(stash) > 0)
     {
-        line = ft_strndup(stash, bn_in_str(stash));
+        line = extract_line(stash, bn_in_str(stash));
         stash = trim_stash(stash); 
         return line;
     }
