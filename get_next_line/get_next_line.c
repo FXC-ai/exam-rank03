@@ -132,13 +132,8 @@ char *trim_stash(char *stash)
 {
     int i;
     char *tmp;
-    int size_stash;
-    int new_size_stash;
-
+    
     i = bn_in_str(stash);
-    size_stash = ft_strlen(stash);
-
-    new_size_stash = size_stash - i;
     
     tmp = ft_strdup(stash+i+1);
     free(stash);
