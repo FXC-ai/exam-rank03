@@ -12,7 +12,6 @@ int ft_strlen(char *str)
     return i;
 }
 
-
 char *ft_strjoin(char *str1, char *str2)
 {
     int i;
@@ -81,16 +80,18 @@ char *ft_strdup(char *str)
 
 char *extract_line(char *str, int n)
 {
-    
+
     char    *result;
     int     i;
 
     if (str == NULL)
         return NULL;
+
     /*
     if (ft_strlen(str) <= n)
         return ft_strdup(str);
     */
+
     result = malloc(sizeof(char) * (n + 2));
     if (result == NULL)
         return NULL;
@@ -112,9 +113,7 @@ int bn_in_str(char *str)
     int i;
 
     if (str == NULL)
-    {
         return (-1);
-    }
 
     i = 0;
     while (str[i] != '\0')
@@ -160,14 +159,12 @@ char *get_next_line(int fd)
 
     tmp = NULL;
     line = NULL;
-    //buf = malloc((BUFFER_SIZE+1)*sizeof(char));
 
+    /* Error 0 : fd ou BUFFER_SIZE invalide */
     if (fd < 0 || BUFFER_SIZE <= 0)
-    {
         return NULL;
-    }
 
-
+    /* Case 0 : Lecture du premier BUFFER*/
     caract_read = read(fd, buf, BUFFER_SIZE);
     if (caract_read == -1)
     {
@@ -176,26 +173,26 @@ char *get_next_line(int fd)
             free(stash);
             stash = NULL;
         }
-        //printf("inutile d aller plus loin\n");
         return(NULL);
     }
-
     buf[caract_read] = '\0';
 
-    
+    /*Boucle  */
     while (caract_read > 0)
     {
+        /*Ajout du nouveau BUFFER à la stash*/
         tmp = ft_strjoin(stash, buf);
         if (stash != NULL)
         {
             free(stash);
             stash = NULL;
         }
-
         stash = ft_strdup(tmp);
         free(tmp);
         tmp = NULL;
 
+
+        /*Extraction de la ligne de la stash*/
         if (bn_in_str(stash) != -1)
         {
             line = extract_line(stash, bn_in_str(stash));
@@ -203,6 +200,7 @@ char *get_next_line(int fd)
             return line;
         }
         
+        /*Lecture du BUFFER suivant*/
         caract_read = read(fd, buf, BUFFER_SIZE);
         if (caract_read == -1)
         {
@@ -211,12 +209,12 @@ char *get_next_line(int fd)
                 free(stash);
                 stash = NULL;
             }
-            //printf("inutile d aller plus loin\n");
             return(NULL);
         }
         buf[caract_read] = '\0';
     }
     
+    /*Cas : il reste des caracteres dans la stash avec \n*/
     if (bn_in_str(stash) != -1 && ft_strlen(stash) > 0)
     {
         line = extract_line(stash, bn_in_str(stash));
@@ -224,6 +222,7 @@ char *get_next_line(int fd)
         return line;
     }
 
+    /*Cas : il reste des caracteres dans la stash SANS \n*/
     if (bn_in_str(stash) == -1 && ft_strlen(stash) > 0)
     {
         line = ft_strdup(stash);
@@ -232,6 +231,7 @@ char *get_next_line(int fd)
         return (line);
     }
 
+    /*Cas : la stash est vide*/
     if (stash != NULL && ft_strlen(stash) == 0)
     {
         free(stash);

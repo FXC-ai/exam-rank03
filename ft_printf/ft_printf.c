@@ -20,41 +20,6 @@ void ft_putstr(char *str, int *count)
 	}
 }
 
-void ft_putnbr_dep(int nbr, int *count)
-{
-	int n;
-	int divider;
-	int cpy_nbr;
-
-	if (nbr == -2147483648)
-	{
-		ft_putstr("-2147483648", count);
-		return ;
-	}
-
-	if (nbr < 0)
-	{
-		count_putchar('-', count);
-		nbr *= -1;
-	}
-
-	divider = 1;
-	cpy_nbr = nbr;
-	while (cpy_nbr > 10)
-	{
-		cpy_nbr = cpy_nbr / 10;
-		divider = divider * 10;
-	}
-
-	while (nbr > 0)
-	{
-		n = (nbr / divider) + 48;
-		count_putchar(n, count);
-		nbr = nbr % divider;
-		divider /= 10;
-	}
-}
-
 void ft_putnbr(int nbr, int *count)
 {
 	int n = 0;
@@ -108,7 +73,7 @@ int ft_printf(const char *str, ...)
 		if (*str == '%')
 		{
 			str++;
-			switch(*str) 
+			switch(*str)
 			{
 				case 's':                       
 					s = va_arg(ap, char *);
@@ -136,41 +101,20 @@ int ft_printf(const char *str, ...)
 
 int main (void)
 {
-    //ft_printf("Voici les tests : %c %d %s\n", 'c', 42, "hello");
 
-	//ft_putstr("Bonjour voici le test\n");
+	int mine, real;
 
-	int test = 2147483647;
-	int test2 = -2147483648;
-	int real, mine;
+	mine = ft_printf ("mine = Test INT_MIN : %d | Test INT_MAX : %d \n",
+						2147483647, -2147483648);
+	real = printf ("real = Test INT_MIN : %d | Test INT_MAX : %ld \n",
+						2147483647, -2147483648);
+	printf ("mine = %d & real = %d\n\n", mine, real);
 
-	//char *str_test;
-
-	real =    printf("%s\n", "Pourquoi");
-	mine = ft_printf("%s\n", "Pourquoi");
-	printf("real = %d | mine = %d\n", real, mine);
-
-	real =    printf("%d\n", test2);
-	mine = ft_printf("%d\n", test2);
-	printf("real = %d | mine = %d\n", real, mine);
-
-
-	real =    printf("%d\n", test);
-	mine = ft_printf("%d\n", test);
-	printf("real = %d | mine = %d\n", real, mine);
-
-
-	real =    printf("%x\n", 9016);
-	mine = ft_printf("%x\n", 9016);
-	printf("real = %d | mine = %d\n", real, mine);
-
-	int count;
-	count = 0;
-	ft_putnbr(-2147483648, &count);
-
-
-	//printf("\n");
-
+	mine = ft_printf ("real = Test INT : %d | Test INT : %d | test str = %s | test hexadecimale = %x\n",
+						900001, -900001, "Hello World !", 2147483647);
+	real = printf ("real = Test INT : %d | Test INT : %d | test str = %s | test hexadecimale = %x\n",
+						900001, -900001, "Hello World !", 2147483647);
+	printf ("mine = %d & real = %d", mine, real);
 
     return 0;
 }
